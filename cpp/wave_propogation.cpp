@@ -68,8 +68,7 @@ void wave_propogation_single(int num_steps, int scale, float damping,
 
   std::chrono::duration<double> elapsed_full =
       (std::chrono::high_resolution_clock::now() - start);
-  std::cerr << elapsed_full.count() << " sec" << std::endl;
-  std::cerr.imbue(std::locale(""));
+  std::cerr << elapsed_full.count() << " S ===> ";
   std::cerr << num_steps / elapsed_full.count() << " Hz" << std::endl;
 }
 
@@ -137,8 +136,7 @@ void wave_propogation_omp(int num_steps, int scale, float damping,
 
   std::chrono::duration<double> elapsed_full =
       (std::chrono::high_resolution_clock::now() - start);
-  std::cerr << elapsed_full.count() << " sec" << std::endl;
-  std::cerr.imbue(std::locale(""));
+  std::cerr << elapsed_full.count() << " S ===> ";
   std::cerr << num_steps / elapsed_full.count() << " Hz" << std::endl;
 #endif
 }
