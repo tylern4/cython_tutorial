@@ -14,8 +14,6 @@ def wave_propogation_py(
     size_y = 2 * scale + 1
     vertPos = int(scale)
     horizPos = int(scale)
-    max_pressure = initial_P / 2
-    min_presure = -initial_P / 2
 
     # V velocity
     # P presure

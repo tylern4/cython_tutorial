@@ -73,7 +73,7 @@ def wave_propogation(num_steps, scale=100, damping=0.25, initial_P=250.0, stop_s
 
       for i in range(size_y):
         for j in range(size_y):
-          P[i][j] -= 0.5 * damping * (V[i][j][0]+V[i][j][1]+V[i][j][2]+V[i][j][3])
+          P[i][j] -= 0.5 * damping * sum(V[i][j])
 
     end = time.time()
     print(f'{end-start} S ===> {num_steps/(end-start)} Hz')
