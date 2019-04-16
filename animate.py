@@ -18,7 +18,7 @@ stop_step = 100
 damping = 0.2
 initial_P = 250
 
-pressure = wave_propogation.wave_propogation_cy_fast(
+pressure = wave_propogation.wave_propogation_cpp_omp(
     num_steps, scale, damping, initial_P, stop_step
 )
 img = ax.imshow(pressure, cmap="viridis_r", interpolation="lanczos")
@@ -31,7 +31,7 @@ def init():
 
 # animation function.  This is called sequentially
 def animate(i):
-    p = wave_propogation.wave_propogation_cy_fast(
+    p = wave_propogation.wave_propogation_cpp_omp(
         i, scale, damping, initial_P, stop_step
     )
     img.set_data(p)
