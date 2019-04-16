@@ -3,6 +3,7 @@ project(wave_propogation)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(VERSION 1.0.0)
 
+set(CMAKE_CXX_STANDARD 17)
 # Add modules to find find packages
 set(CMAKE_MODULE_PATH
    ${CMAKE_MODULE_PATH}
@@ -15,11 +16,14 @@ find_package(PythonInterp REQUIRED)
 find_package(PythonLibs REQUIRED)
 find_package(PythonExtensions REQUIRED)
 find_package(NumPy REQUIRED)
-
-find_package(OpenMP REQUIRED)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+if(APPLE)
+  add_definitions(-D__APPLE__)
+else()
+  find_package(OpenMP REQUIRED)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+endif()
 
 include_directories(${wave_propogation_SOURCE_DIR})
 add_library(wave_propogation_static STATIC wave_propogation.cpp)
