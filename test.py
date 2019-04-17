@@ -3,6 +3,7 @@ import cpp.build.wave_propogation as wave_propogation
 from numpy.core.umath import pi
 from numpy.ma import sin
 import time
+from matplotlib import pyplot as plt
 
 
 def wave_propogation_py(
@@ -45,30 +46,36 @@ def wave_propogation_py(
     return P
 
 
-num_steps = 2500
+num_steps = 50000
 scale = 50
 stop_step = 100
 damping = 0.2
 initial_P = 250
 
 
-for n in range(500, num_steps, 500):
-    print(n)
-    pressure_0 = wave_propogation_py(n, scale, damping, initial_P, stop_step)
-    print(np.array_equal(pressure_0, pressure_0))
-    pressure = wave_propogation.wave_propogation(
-        n, scale, damping, initial_P, stop_step
-    )
-    print(np.array_equal(pressure_0, pressure))
-    pressure = wave_propogation.wave_propogation_cy_fast(
-        n, scale, damping, initial_P, stop_step
-    )
-    print(np.array_equal(pressure_0, pressure))
-    pressure = wave_propogation.wave_propogation_cpp(
-        n, scale, damping, initial_P, stop_step
-    )
-    print(np.array_equal(pressure_0, pressure))
-    pressure = wave_propogation.wave_propogation_cpp_omp(
-        n, scale, damping, initial_P, stop_step
-    )
-    print(np.array_equal(pressure_0, pressure))
+def plots(p, type, number):
+    fig = plt.figure(figsize=(5, 5))
+    ax = plt.axes()
+    img = ax.imshow(p, cmap="viridis_r", interpolation="lanczos")
+    plt.savefig(f"outputs/{type}_{number}.png")
+
+
+funcs = {
+    "Python": wave_propogation_py,
+    "Cython": wave_propogation.wave_propogation,
+    "Cython_fast": wave_propogation.wave_propogation_cy_fast,
+    "Cpp": wave_propogation.wave_propogation_cpp,
+    "Omp": wave_propogation.wave_propogation_cpp_omp,
+}
+
+from tqdm import tqdm
+
+with open('results.txt', 'w') as file:
+    file.write("type,num,start,stop,elapsed\n")
+    for n in tqdm(range(100, num_steps, 100)):
+        for name, func in funcs.items():
+            start = time.time()
+            pressure = func(n, scale, damping, initial_P, stop_step)
+            stop = time.time()
+            file.write(name+","+str(n)+","+str(start)+","+str(stop)+","+str(stop-start)+"\n")
+            plots(pressure, name, n)
