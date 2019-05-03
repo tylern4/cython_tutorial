@@ -8,7 +8,29 @@ from cython.view cimport array as cvarray
 cdef extern from "wave_propogation.hpp":
   void wave_propogation_single(int, int, float, float, int, float*)
   void wave_propogation_omp(int, int, float, float, int, float*)
+  void wave_propogation_fortran_(int*, int*, float*, float*, int*, float*)
 
+
+@cython.boundscheck(False)
+@cython.cdivision(True)
+@cython.wraparound(False)
+@cython.infer_types(False)
+def wave_propogation_fortran(int num_steps, int scale=100,float damping=0.25, float initial_P=250.0, int stop_step=100):
+  cdef int size_x = 2 * scale + 1
+  cdef int size_y = 2 * scale + 1
+  cdef int *_num_steps=&num_steps
+  cdef int *_scale=&scale
+  cdef float *_damping=&damping
+  cdef float *_initial_P=&initial_P
+  cdef int *_stop_step=&stop_step
+
+  cdef float *array = <float *> malloc(sizeof(float) * size_x * size_y)
+  wave_propogation_fortran_(_num_steps, _scale, _damping, _initial_P, _stop_step, array)
+  P = [[0.0 for x in range(size_x)] for y in range(size_y)]
+  for i in range(size_x):
+    for j in range(size_y):
+      P[i][j] = array[i*size_x+j] if not np.isnan(array[i*size_x+j]) else 0.0
+  return P
 
 @cython.boundscheck(False)
 @cython.cdivision(True)
@@ -43,7 +65,6 @@ def wave_propogation_cpp_omp(int num_steps, int scale=100, float damping=0.25, f
   return P
 
 def wave_propogation(num_steps, scale=100, damping=0.25, initial_P=250.0, stop_step=100):
-    start = time.time()
     omega = 3.0 / (2.0 * pi)
 
     size_x = 2 * scale + 1
@@ -74,9 +95,6 @@ def wave_propogation(num_steps, scale=100, damping=0.25, initial_P=250.0, stop_s
       for i in range(size_y):
         for j in range(size_y):
           P[i][j] -= 0.5 * damping * sum(V[i][j])
-
-    end = time.time()
-    print(f'{end-start} S ===> {num_steps/(end-start)} Hz')
     return P
 
 from libc.math cimport M_PI as pi
@@ -85,7 +103,6 @@ from libc.math cimport sin as sin
 @cython.cdivision(False)
 @cython.wraparound(False)
 def wave_propogation_cy_fast(int num_steps, int scale=100, float damping=0.25, float initial_P=250.0, int stop_step=100):
-    start = time.time()
     cdef float omega = 3.0 / (2.0 * pi)
 
     cdef int size_x = 2 * scale + 1
@@ -123,7 +140,4 @@ def wave_propogation_cy_fast(int num_steps, int scale=100, float damping=0.25, f
       for i in range(size_y):
         for j in range(size_y):
           P[i][j] -= 0.5 * damping * (V[i][j][0]+V[i][j][1]+V[i][j][2]+V[i][j][3])
-
-    end = time.time()
-    print(f'{end-start} S ===> {num_steps/(end-start)} Hz')
     return P

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(wave_propogation)
+project(wave_propogation CXX C Fortran)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(VERSION 1.0.0)
 
@@ -10,6 +10,8 @@ set(CMAKE_MODULE_PATH
    ${PROJECT_SOURCE_DIR}/cmake)
 
 set(CMAKE_CXX_FLAGS "-Ofast")
+set(CMAKE_C_FLAGS "-Ofast")
+set(CMAKE_Fortran_FLAGS "-Ofast")
 
 find_package(Cython REQUIRED)
 find_package(PythonInterp REQUIRED)
@@ -26,7 +28,7 @@ else()
 endif()
 
 include_directories(${wave_propogation_SOURCE_DIR})
-add_library(wave_propogation_static STATIC wave_propogation.cpp)
+add_library(wave_propogation_static STATIC wave_propogation.f90 wave_propogation.cpp)
 
 add_cython_target(wave_propogation wave_propogation.pyx CXX PY3 OUTPUT_VAR _wave_propogation)
 include_directories(${PYTHON_INCLUDE_DIRS} ${NumPy_INCLUDE_DIR})

@@ -34,7 +34,6 @@ void wave_propogation_single(int num_steps, int scale, float damping,
   }
 
   P[vertPos][horizPos] = initial_P;
-  auto start = std::chrono::high_resolution_clock::now();
   for (step = 0; step < num_steps; step++) {
     if (step <= stop_step)
       P[vertPos][horizPos] = initial_P * sin(omega * step);
@@ -65,11 +64,6 @@ void wave_propogation_single(int num_steps, int scale, float damping,
     }
   }
 #endif
-
-  std::chrono::duration<double> elapsed_full =
-      (std::chrono::high_resolution_clock::now() - start);
-  std::cout << elapsed_full.count() << " S ===> ";
-  std::cout << num_steps / elapsed_full.count() << " Hz" << std::endl;
 }
 
 void wave_propogation_omp(int num_steps, int scale, float damping,
@@ -97,7 +91,6 @@ void wave_propogation_omp(int num_steps, int scale, float damping,
   // Initialization
   float(*P)[size_y] = (float(*)[size_y])_P;
   float V[size_x][size_y][4];
-  auto start = std::chrono::high_resolution_clock::now();
 
 #pragma omp parallel for private(i, j) num_threads(4)
   for (i = 0; i < size_x; i++) {
@@ -133,10 +126,5 @@ void wave_propogation_omp(int num_steps, int scale, float damping,
       }
     }
   }
-
-  std::chrono::duration<double> elapsed_full =
-      (std::chrono::high_resolution_clock::now() - start);
-  std::cout << elapsed_full.count() << " S ===> ";
-  std::cout << num_steps / elapsed_full.count() << " Hz" << std::endl;
 #endif
 }

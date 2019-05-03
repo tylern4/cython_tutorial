@@ -22,7 +22,6 @@ def wave_propogation_py(
     P = [[0.0 for x in range(size_x)] for y in range(size_y)]
     V = [[[0.0, 0.0, 0.0, 0.0] for x in range(size_x)] for y in range(size_y)]
     P[vertPos][horizPos] = initial_P
-    start = time.time()
     for step in range(num_steps):
         if step <= stop_step:
             P[vertPos][horizPos] = initial_P * sin(omega * step)
@@ -40,13 +39,10 @@ def wave_propogation_py(
         for i in range(size_y):
             for j in range(size_x):
                 P[i][j] -= 0.5 * damping * sum(V[i][j])
-
-    end = time.time()
-    print(f"{end-start} S ===> {num_steps/(end-start)} Hz")
     return P
 
 
-num_steps = 50000
+num_steps = 500
 scale = 50
 stop_step = 100
 damping = 0.2
@@ -65,17 +61,30 @@ funcs = {
     "Cython": wave_propogation.wave_propogation,
     "Cython_fast": wave_propogation.wave_propogation_cy_fast,
     "Cpp": wave_propogation.wave_propogation_cpp,
-    "Omp": wave_propogation.wave_propogation_cpp_omp,
+    # "Omp": wave_propogation.wave_propogation_cpp_omp,
+    "Fortran": wave_propogation.wave_propogation_fortran,
 }
 
 from tqdm import tqdm
 
-with open('results.txt', 'w') as file:
+with open("results.txt", "w") as file:
     file.write("type,num,start,stop,elapsed\n")
-    for n in tqdm(range(100, num_steps, 100)):
+    for n in range(100, num_steps, 100):
         for name, func in funcs.items():
             start = time.time()
             pressure = func(n, scale, damping, initial_P, stop_step)
             stop = time.time()
-            file.write(name+","+str(n)+","+str(start)+","+str(stop)+","+str(stop-start)+"\n")
+            file.write(
+                name
+                + ","
+                + str(n)
+                + ","
+                + str(start)
+                + ","
+                + str(stop)
+                + ","
+                + str(stop - start)
+                + "\n"
+            )
+            print(name, n / (stop - start))
             plots(pressure, name, n)
