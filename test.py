@@ -57,8 +57,8 @@ def plots(p, type, number):
 
 
 funcs = {
-    "Python": wave_propogation_py,
-    "Cython": wave_propogation.wave_propogation,
+    # "Python": wave_propogation_py,
+    # "Cython": wave_propogation.wave_propogation,
     "Cython_fast": wave_propogation.wave_propogation_cy_fast,
     "Cpp": wave_propogation.wave_propogation_cpp,
     # "Omp": wave_propogation.wave_propogation_cpp_omp,

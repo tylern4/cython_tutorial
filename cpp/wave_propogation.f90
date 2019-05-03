@@ -1,5 +1,6 @@
 
-SUBROUTINE wave_propogation_fortran(num_steps, scale,damping, initial_P, stop_step, P)
+
+SUBROUTINE wave_propogation_fortran(num_steps, scale, damping, initial_P, stop_step, P)
   IMPLICIT NONE
   INTEGER size_x,size_Y,i,j,k,step
   REAL PI, omega
@@ -14,9 +15,9 @@ SUBROUTINE wave_propogation_fortran(num_steps, scale,damping, initial_P, stop_st
   PI = 3.14159
   omega = 3.0 / (2.0 * PI)
 
-  DO i=1,size_x
+  DO k=1,4
      DO j=1,size_x
-        DO k=1,4
+        DO i=1,size_x
            V(i,j,k) = 0.0
         END DO
      END DO
@@ -24,13 +25,13 @@ SUBROUTINE wave_propogation_fortran(num_steps, scale,damping, initial_P, stop_st
 
   P(scale,scale) = initial_P
 
-  DO step = 0,num_steps
+  DO step = 1,num_steps
      IF(step <= stop_step) THEN
         P(scale,scale) = initial_P * SIN(omega * step)
      ENDIF
 
-     DO i=1,size_x
-        DO j=1,size_x
+     DO j=1,size_x
+        DO i=1,size_x
            V(i,j,1) = MERGE(V(i,j,1) + P(i,j) - P(i - 1,j), P(i,j), i > 1)
            V(i,j,2) = MERGE(V(i,j,2) + P(i,j) - P(i,j + 1), P(i,j), j < size_x - 1)
            V(i,j,3) = MERGE(V(i,j,3) + P(i,j) - P(i + 1,j), P(i,j), i < size_y - 1)
@@ -38,8 +39,8 @@ SUBROUTINE wave_propogation_fortran(num_steps, scale,damping, initial_P, stop_st
         END DO
      END DO
 
-     DO i=1,size_x
-        DO j=1,size_x
+     DO j=1,size_x
+        DO i=1,size_x
            P(i,j) = P(i,j) - 0.5 * damping * (V(i,j,1) + V(i,j,2) + V(i,j,3) + V(i,j,4))
         END DO
      END DO
