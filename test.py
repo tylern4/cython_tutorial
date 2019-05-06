@@ -4,6 +4,7 @@ from numpy.core.umath import pi
 from numpy.ma import sin
 import time
 from matplotlib import pyplot as plt
+import pandas as pd
 
 
 def wave_propogation_py(
@@ -42,7 +43,7 @@ def wave_propogation_py(
     return P
 
 
-num_steps = 500
+num_steps = 10000
 scale = 50
 stop_step = 100
 damping = 0.2
@@ -57,19 +58,17 @@ def plots(p, type, number):
 
 
 funcs = {
-    # "Python": wave_propogation_py,
-    # "Cython": wave_propogation.wave_propogation,
+    "Python": wave_propogation_py,
+    "Cython": wave_propogation.wave_propogation,
     "Cython_fast": wave_propogation.wave_propogation_cy_fast,
     "Cpp": wave_propogation.wave_propogation_cpp,
-    # "Omp": wave_propogation.wave_propogation_cpp_omp,
+    "Omp": wave_propogation.wave_propogation_cpp_omp,
     "Fortran": wave_propogation.wave_propogation_fortran,
 }
 
-from tqdm import tqdm
-
-with open("results.txt", "w") as file:
+with open("results.csv", "w") as file:
     file.write("type,num,start,stop,elapsed\n")
-    for n in range(100, num_steps, 100):
+    for n in range(100, num_steps, 10):
         for name, func in funcs.items():
             start = time.time()
             pressure = func(n, scale, damping, initial_P, stop_step)
@@ -86,5 +85,5 @@ with open("results.txt", "w") as file:
                 + str(stop - start)
                 + "\n"
             )
-            print(name, n / (stop - start))
-            plots(pressure, name, n)
+            print(name, n, n / (stop - start))
+            # plots(pressure, name, n)
