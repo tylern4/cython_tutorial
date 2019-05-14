@@ -5,7 +5,7 @@ import time
 cimport cython
 from cython.view cimport array as cvarray
 
-cdef extern from "wave_propogation.hpp":
+cdef extern from "wp.hpp":
   void wave_propogation_(int*, int*, float*, float*, int*, float*)
 
 @cython.boundscheck(False)

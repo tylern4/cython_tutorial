@@ -20,7 +20,7 @@ find_package(NumPy REQUIRED)
 include_directories(${PROJECT_SOURCE_DIR})
 
 
-add_library(wave_propogation_static STATIC wave_propogation.cpp)
+add_library(wave_propogation_static STATIC wp.cpp)
 
 add_cython_target(wave_propogation wave_propogation.pyx CXX PY3 OUTPUT_VAR _wave_propogation)
 include_directories(${PYTHON_INCLUDE_DIRS} ${NumPy_INCLUDE_DIR})

@@ -31,3 +31,12 @@ def wave_propogation(num_steps, scale, damping, initial_P, stop_step):
             for j in range(size_x):
                 P[i][j] -= 0.5 * damping * sum(V[i][j])
     return P
+
+
+if __name__ == "__main__":
+    num_steps = 100
+    scale = 50
+    stop_step = 100
+    damping = 0.25
+    initial_P = 25.0
+    pressure = wave_propogation(num_steps, scale, damping, initial_P, stop_step)
