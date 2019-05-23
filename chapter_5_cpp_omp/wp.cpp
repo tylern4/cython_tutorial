@@ -93,7 +93,7 @@ void wave_propogation_omp(int num_steps, int scale, float damping,
   float(*P)[size_y] = (float(*)[size_y])_P;
   float V[size_x][size_y][4];
 
-#pragma omp parallel for private(i, j) num_threads(4)
+#pragma omp parallel for private(i, j) num_threads(2) collapse(2)
   for (i = 0; i < size_x; i++) {
     for (j = 0; j < size_y; j++) {
       P[i][j] = 0.0;
@@ -119,7 +119,7 @@ void wave_propogation_omp(int num_steps, int scale, float damping,
       }
     }
 
-#pragma omp parallel for private(i, j) num_threads(4)
+#pragma omp parallel for private(i, j) num_threads(2) collapse(2)
     for (i = 0; i < size_x; i++) {
       for (j = 0; j < size_y; j++) {
         P[i][j] -=
