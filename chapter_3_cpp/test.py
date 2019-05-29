@@ -4,8 +4,8 @@ import time
 from matplotlib import pyplot as plt
 
 
-num_steps = 100
-scale = 50
+num_steps = 100000
+scale = 256
 stop_step = 100
 damping = 0.25
 initial_P = 25.0
