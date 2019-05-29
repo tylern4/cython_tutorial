@@ -41,6 +41,9 @@ make
 To use module the shared library which is built (`wave_propogation.cpython-{PYVER}-{PLATROM}.so`) it should either be in your current directory, or in a directory accessible by your `$PYTHON_PATH`. It can also be in a sub folder such as build by using `.`'s in place of `/`.
 
 
+### Using the Templates
+
+There are two templates available to start your cython project from, either using setup.py or cmake as the build platfom. Put your code into a pyx file in the folder, change the name in the setup.py or CMakeLists.txt and use it yourself. For an existing python project you want to speedup use the setup.py template. For a C/C++/Fortran project start with the cmake template. 
 
 
 
